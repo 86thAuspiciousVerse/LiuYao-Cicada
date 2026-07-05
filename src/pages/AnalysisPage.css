@@ -84,16 +84,42 @@
   outline: none;
 }
 
-.analysis-run {
+.analysis-config input:disabled {
+  color: var(--mist);
+  cursor: not-allowed;
+}
+
+.analysis-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 0.48fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.analysis-run,
+.analysis-local {
   width: 100%;
   min-height: 50px;
-  margin-top: 16px;
   border-radius: 10px;
-  background: var(--vermillion);
-  color: #fff;
   font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 900;
+}
+
+.analysis-run {
+  background: var(--vermillion);
+  color: #fff;
+}
+
+.analysis-local {
+  background: rgba(23,33,29,0.08);
+  color: var(--ink);
+}
+
+.analysis-run:disabled,
+.analysis-local:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
 }
 
 .analysis-error {
@@ -103,6 +129,12 @@
   background: rgba(183,53,45,0.08);
   color: var(--vermillion);
   font-size: 0.88rem;
+}
+
+@media (max-width: 420px) {
+  .analysis-actions {
+    grid-template-columns: 1fr;
+  }
 }
 
 .analysis-output {

@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { analyzeHexagram, AIAnalysisError } from '../ai'
 import { extract } from '../core/extractor'
 import { serializeForAI } from '../core/serializer'
 import { buildPanFromSearch } from '../utils/panFromSearch'
@@ -23,9 +22,7 @@ export default function AnalysisPage() {
   )
   const settings = readAISettings()
   const [aiProvider, setAiProvider] = useState<AIProviderType>(settings.provider)
-  const [apiKey, setApiKey] = useState(settings.apiKey)
   const [model, setModel] = useState(settings.model)
-  const [baseUrl, setBaseUrl] = useState(settings.baseUrl)
   const [aiText, setAiText] = useState('')
   const [aiError, setAiError] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -44,47 +41,30 @@ export default function AnalysisPage() {
     setAiError('')
     setAiText('')
     setIsAnalyzing(true)
-    saveAISettings({ provider: aiProvider, apiKey, model, baseUrl })
-
-    if (!apiKey.trim()) {
-      setAiText(buildLocalAnalysis(pan, relations))
-      setAnalysisMode('local')
-      setIsAnalyzing(false)
-      return
-    }
+    saveAISettings({ provider: aiProvider, model })
 
     try {
-      let streamed = ''
       setAnalysisMode('remote')
-      const result = await analyzeHexagram(
-        {
-          type: aiProvider,
-          apiKey: apiKey.trim(),
-          model: model.trim() || undefined,
-          baseUrl: baseUrl.trim() || undefined,
-        },
-        {
-          serializedPan,
-          question: pan.question,
-          yongShen: pan.yongShen,
-        },
-        {
-          stream: true,
-          temperature: 0.45,
-          maxTokens: 4096,
-          onChunk: chunk => {
-            streamed += chunk
-            setAiText(streamed)
-          },
-        },
-      )
-      if (!streamed) setAiText(result.content)
+      const result = await requestServerAnalysis({
+        provider: aiProvider,
+        model: model.trim() || undefined,
+        serializedPan,
+        question: pan.question,
+        yongShen: pan.yongShen,
+      })
+      setAiText(result.content)
     } catch (err) {
       setAnalysisMode('idle')
       setAiError(formatAIError(err))
     } finally {
       setIsAnalyzing(false)
     }
+  }
+
+  const handleLocalSummary = () => {
+    setAiError('')
+    setAiText(buildLocalAnalysis(pan, relations))
+    setAnalysisMode('local')
   }
 
   return (
@@ -113,21 +93,26 @@ export default function AnalysisPage() {
           </label>
           <label>
             <span>API Key</span>
-            <input type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="留空使用本地摘要" />
+            <input value="由服务端环境变量读取" disabled />
           </label>
           <label>
             <span>模型</span>
-            <input value={model} onChange={e => setModel(e.target.value)} placeholder={aiProvider === 'openai' ? '默认 gpt-4o' : '默认 claude-sonnet-4-6'} />
+            <input value={model} onChange={e => setModel(e.target.value)} placeholder={aiProvider === 'openai' ? '服务端默认或 gpt-4o' : '服务端默认 Claude 模型'} />
           </label>
           <label>
             <span>Base URL</span>
-            <input value={baseUrl} onChange={e => setBaseUrl(e.target.value)} placeholder={aiProvider === 'openai' ? 'https://api.openai.com/v1' : 'https://api.anthropic.com'} />
+            <input value="由服务端环境变量读取" disabled />
           </label>
         </div>
 
-        <button className="analysis-run" onClick={handleAnalyze} disabled={isAnalyzing}>
-          {isAnalyzing ? '解析中...' : apiKey.trim() ? '调用 AI 解析' : '生成本地摘要'}
-        </button>
+        <div className="analysis-actions">
+          <button className="analysis-run" onClick={handleAnalyze} disabled={isAnalyzing}>
+            {isAnalyzing ? '解析中...' : '调用服务端 AI 解析'}
+          </button>
+          <button className="analysis-local" onClick={handleLocalSummary} disabled={isAnalyzing}>
+            生成本地摘要
+          </button>
+        </div>
       </section>
 
       {aiError && <div className="analysis-error">{aiError}</div>}
@@ -149,8 +134,57 @@ export default function AnalysisPage() {
   )
 }
 
+interface ServerAnalysisRequest {
+  provider: AIProviderType
+  model?: string
+  serializedPan: string
+  question?: string
+  yongShen?: string
+}
+
+interface ServerAnalysisResponse {
+  content: string
+}
+
+async function requestServerAnalysis(request: ServerAnalysisRequest): Promise<ServerAnalysisResponse> {
+  const response = await fetch('/api/analyze', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(request),
+  })
+
+  let data: unknown = null
+  try {
+    data = await response.json()
+  } catch {
+    // Keep the clearer status-based error below.
+  }
+
+  if (!response.ok) {
+    const message = getServerErrorMessage(data) ?? `服务端 AI 代理返回 HTTP ${response.status}`
+    throw new Error(message)
+  }
+
+  if (!isServerAnalysisResponse(data)) {
+    throw new Error('服务端 AI 代理返回格式异常')
+  }
+
+  return data
+}
+
+function getServerErrorMessage(data: unknown): string | undefined {
+  if (typeof data !== 'object' || data === null) return undefined
+  const error = (data as { error?: unknown }).error
+  return typeof error === 'string' ? error : undefined
+}
+
+function isServerAnalysisResponse(data: unknown): data is ServerAnalysisResponse {
+  return typeof data === 'object' &&
+    data !== null &&
+    typeof (data as { content?: unknown }).content === 'string'
+}
+
 function formatAIError(err: unknown): string {
-  if (err instanceof AIAnalysisError) return `${err.provider} 调用失败：${err.message}`
   if (err instanceof Error) return `解析失败：${err.message}`
   return '解析失败：未知错误'
 }

@@ -8,13 +8,11 @@ export default function SettingsPage() {
   const navigate = useNavigate()
   const initial = readAISettings()
   const [provider, setProvider] = useState<AIProviderType>(initial.provider)
-  const [apiKey, setApiKey] = useState(initial.apiKey)
   const [model, setModel] = useState(initial.model)
-  const [baseUrl, setBaseUrl] = useState(initial.baseUrl)
   const [saved, setSaved] = useState(false)
 
   const handleSave = () => {
-    saveAISettings({ provider, apiKey, model, baseUrl })
+    saveAISettings({ provider, model })
     setSaved(true)
     window.setTimeout(() => setSaved(false), 1800)
   }
@@ -44,30 +42,11 @@ export default function SettingsPage() {
             </label>
 
             <label className="settings-field">
-              <span>API Key</span>
-              <input
-                type="password"
-                placeholder="不填写时使用本地规则摘要"
-                value={apiKey}
-                onChange={e => setApiKey(e.target.value)}
-              />
-            </label>
-
-            <label className="settings-field">
               <span>模型</span>
               <input
-                placeholder={provider === 'openai' ? '默认 gpt-4o' : '默认 claude-sonnet-4-6'}
+                placeholder={provider === 'openai' ? '服务端默认或 gpt-4o' : '服务端默认 Claude 模型'}
                 value={model}
                 onChange={e => setModel(e.target.value)}
-              />
-            </label>
-
-            <label className="settings-field">
-              <span>Base URL</span>
-              <input
-                placeholder={provider === 'openai' ? 'https://api.openai.com/v1' : 'https://api.anthropic.com'}
-                value={baseUrl}
-                onChange={e => setBaseUrl(e.target.value)}
               />
             </label>
           </div>
@@ -75,7 +54,7 @@ export default function SettingsPage() {
 
         <section className="settings-card settings-note">
           <h2 className="settings-card-title">解析模式</h2>
-          <p>结果页会优先使用这里保存的 AI 配置。未保存 API Key 时，系统会生成本地规则摘要。</p>
+          <p>远程 AI 通过服务端代理调用，API Key 和 Base URL 只从服务端环境变量读取，不会保存在浏览器中。</p>
         </section>
 
         <button className="settings-save" onClick={handleSave}>
