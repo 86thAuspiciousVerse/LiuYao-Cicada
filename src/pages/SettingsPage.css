@@ -1,0 +1,91 @@
+.settings-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+.settings-content {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 18px 18px calc(96px + var(--safe-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-card {
+  background: var(--surface-raised);
+  border: 1px solid rgba(23,33,29,0.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.settings-card-title {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.settings-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.settings-field input,
+.settings-field select {
+  width: 100%;
+  min-height: 42px;
+  padding: 11px 12px;
+  border: 1px solid rgba(23, 33, 29, 0.12);
+  border-radius: 8px;
+  background: rgba(239, 243, 239, 0.58);
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+}
+
+.settings-field input:focus,
+.settings-field select:focus {
+  border-color: var(--vermillion);
+  box-shadow: 0 0 0 3px rgba(183, 53, 45, 0.1);
+}
+
+.settings-note p {
+  margin: 0;
+  color: var(--mist);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.settings-save {
+  width: 100%;
+  min-height: 46px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--vermillion);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.settings-save:hover {
+  background: #a81830;
+}

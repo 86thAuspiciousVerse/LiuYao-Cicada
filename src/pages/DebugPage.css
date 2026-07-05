@@ -1,0 +1,275 @@
+/* ============================================================
+   调试输出页 — AI 格式化 Markdown 预览
+   ============================================================ */
+
+.debug-page {
+  min-height: 100dvh;
+  background: var(--paper);
+  padding: 24px 16px 48px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ── Header ── */
+
+.debug-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 20px;
+  border-bottom: 1px solid var(--paper-dark);
+  margin-bottom: 16px;
+}
+
+.debug-back {
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--ink);
+  padding: 4px 10px;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+.debug-back:hover { opacity: 0.6; }
+
+.debug-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 2px;
+}
+
+/* ── Tabs ── */
+
+.debug-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  background: var(--paper-dark);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.debug-tab {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mist);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.debug-tab.is-active {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+}
+
+.debug-tab:hover:not(.is-active) {
+  color: var(--ink);
+  background: rgba(26, 26, 46, 0.06);
+}
+
+/* ── Content ── */
+
+.debug-content {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* 原始 Markdown 区域 */
+.debug-raw {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.md-raw-code {
+  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 渲染预览区域 */
+.debug-rendered {
+  padding: 24px 28px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.debug-rendered h1 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--vermillion);
+  letter-spacing: 1px;
+}
+
+.debug-rendered h2 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 20px 0 10px;
+  padding-left: 10px;
+  border-left: 3px solid var(--gold);
+}
+
+.debug-rendered h3 {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 16px 0 8px;
+}
+
+.debug-rendered p {
+  margin: 6px 0;
+}
+
+.debug-rendered ul {
+  margin: 6px 0;
+  padding-left: 24px;
+  list-style: none;
+}
+
+.debug-rendered ul li {
+  position: relative;
+  padding-left: 14px;
+  margin: 4px 0;
+}
+
+.debug-rendered ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--vermillion);
+  font-weight: 700;
+}
+
+.debug-rendered table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.debug-rendered th {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding: 8px 10px;
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.debug-rendered th:last-child {
+  border-right: none;
+}
+
+.debug-rendered td {
+  padding: 7px 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--paper-dark);
+  border-right: 1px solid var(--paper-dark);
+}
+
+.debug-rendered td:last-child {
+  border-right: none;
+}
+
+.debug-rendered tr:nth-child(even) td {
+  background: #fafaf7;
+}
+
+.debug-rendered tr:last-child td {
+  border-bottom: none;
+}
+
+.debug-rendered strong {
+  font-weight: 700;
+  color: var(--vermillion);
+}
+
+.debug-rendered pre {
+  background: #f5f3ee;
+  border: 1px solid var(--paper-dark);
+  border-radius: 6px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.debug-rendered pre code {
+  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* 空行占位 */
+.debug-rendered .md-empty-line {
+  height: 8px;
+}
+
+/* ── Footer ── */
+
+.debug-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.debug-copy-btn {
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  color: #fff;
+  background: var(--ink);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 1px;
+}
+
+.debug-copy-btn:hover {
+  background: var(--vermillion);
+}
+
+.debug-copy-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Error ── */
+
+.debug-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--mist);
+  gap: 12px;
+}

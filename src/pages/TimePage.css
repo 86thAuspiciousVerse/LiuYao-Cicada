@@ -1,0 +1,269 @@
+.time-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+/* ─── Header ─── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(255, 252, 247, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(23, 33, 29, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(23, 33, 29, 0.12);
+  border-radius: 8px;
+  font-size: 1.15rem;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.back-btn:hover {
+  background: rgba(23, 33, 29, 0.05);
+  border-color: rgba(23, 33, 29, 0.2);
+}
+
+.back-btn:active {
+  background: rgba(23, 33, 29, 0.1);
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* ─── Content ─── */
+.page-content {
+  flex: 1;
+  padding: 18px 18px calc(96px + var(--safe-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ─── Card ─── */
+.card {
+  background: var(--surface-raised);
+  border: 1px solid rgba(23,33,29,0.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.card-title-accent {
+  display: inline-block;
+  width: 3px;
+  height: 16px;
+  background: var(--vermillion);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ─── Lunar Grid ─── */
+.lunar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.lunar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(23, 33, 29, 0.07);
+}
+
+.lunar-item:last-child {
+  border-bottom: none;
+}
+
+.lunar-item dt {
+  font-size: 0.875rem;
+  color: var(--mist);
+  font-weight: 500;
+}
+
+.lunar-item dd {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+  font-family: var(--font-display);
+}
+
+.lunar-item--highlight dd {
+  color: var(--vermillion);
+}
+
+/* ─── Date Picker ─── */
+.date-picker-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.toggle-track {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background: rgba(23, 33, 29, 0.12);
+  border-radius: 12px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-input:checked + .toggle-track {
+  background: var(--vermillion);
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(23, 33, 29, 0.15);
+}
+
+.toggle-input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(18px);
+}
+
+.toggle-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.hint-text {
+  font-size: 0.85rem;
+  color: var(--mist);
+  margin: 4px 0 0;
+}
+
+.date-picker-card .input-field {
+  margin-top: 4px;
+  color-scheme: light;
+}
+
+/* ─── Input ─── */
+.input-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.optional {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--mist);
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(23, 33, 29, 0.12);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: rgba(239, 243, 239, 0.58);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+
+.input-field::placeholder {
+  color: var(--mist);
+  opacity: 0.7;
+}
+
+.input-field:focus {
+  border-color: var(--vermillion);
+  box-shadow: 0 0 0 3px rgba(183, 53, 45, 0.1);
+}
+
+/* ─── Divination Button ─── */
+.divination-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--vermillion);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+.divination-btn:hover {
+  background: #a81830;
+}
+
+.divination-btn:active {
+  transform: scale(0.98);
+}

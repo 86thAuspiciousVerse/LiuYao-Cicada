@@ -1,0 +1,330 @@
+.number-page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+/* ─── Header ─── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(255, 252, 247, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(23, 33, 29, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(23, 33, 29, 0.12);
+  border-radius: 8px;
+  font-size: 1.15rem;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.back-btn:hover {
+  background: rgba(23, 33, 29, 0.05);
+  border-color: rgba(23, 33, 29, 0.2);
+}
+
+.back-btn:active {
+  background: rgba(23, 33, 29, 0.1);
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* ─── Mode Tabs ─── */
+.mode-tabs {
+  display: flex;
+  gap: 0;
+  background: rgba(23, 33, 29, 0.06);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+
+.mode-tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  border-radius: calc(var(--radius) - 4px);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  color: var(--mist);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mode-tab:hover {
+  color: var(--ink);
+  background: rgba(23, 33, 29, 0.04);
+}
+
+.mode-tab--active {
+  background: var(--surface-raised);
+  color: var(--vermillion);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.mode-tab--active:hover {
+  background: #fff;
+  color: var(--vermillion);
+}
+
+/* ─── Content ─── */
+.page-content {
+  flex: 1;
+  padding: 18px 18px calc(96px + var(--safe-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ─── Card ─── */
+.card {
+  background: var(--surface-raised);
+  border: 1px solid rgba(23,33,29,0.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.card-title-accent {
+  display: inline-block;
+  width: 3px;
+  height: 16px;
+  background: var(--vermillion);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ─── Number Inputs ─── */
+.number-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.number-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.number-field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ─── Input ─── */
+.input-field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(23, 33, 29, 0.12);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: rgba(239, 243, 239, 0.58);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+
+.input-field::placeholder {
+  color: var(--mist);
+  opacity: 0.7;
+}
+
+.input-field:focus {
+  border-color: var(--vermillion);
+  box-shadow: 0 0 0 3px rgba(183, 53, 45, 0.1);
+}
+
+/* Remove number input spinners for cleaner look */
+.input-field[type='number']::-webkit-inner-spin-button,
+.input-field[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-field[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* ─── Preview Card ─── */
+.preview-card {
+  border-left: 3px solid var(--vermillion);
+}
+
+.preview-hexagram {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: rgba(239, 243, 239, 0.62);
+  border-radius: 8px;
+}
+
+.preview-symbol {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.preview-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--font-display);
+}
+
+.preview-palace {
+  font-size: 0.8rem;
+  color: var(--mist);
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(183, 53, 45, 0.08);
+  color: var(--vermillion);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.preview-grid {
+  display: flex;
+  gap: 16px;
+}
+
+.preview-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: rgba(239, 243, 239, 0.62);
+  border-radius: 8px;
+}
+
+.preview-label {
+  font-size: 0.8rem;
+  color: var(--mist);
+  font-weight: 500;
+}
+
+.preview-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--font-display);
+}
+
+/* ─── DongYao Calc ─── */
+.dongyao-calc {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(239, 243, 239, 0.62);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ─── Hint Card ─── */
+.hint-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.hint-text {
+  font-size: 0.9rem;
+  color: var(--mist);
+  text-align: center;
+}
+
+/* ─── Input Card ─── */
+.input-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.optional {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--mist);
+}
+
+/* ─── Divination Button ─── */
+.divination-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--vermillion);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, opacity 0.15s;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+.divination-btn:hover:not(:disabled) {
+  background: #a81830;
+}
+
+.divination-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.divination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

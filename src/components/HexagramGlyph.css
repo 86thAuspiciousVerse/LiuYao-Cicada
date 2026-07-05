@@ -1,0 +1,28 @@
+.yao-mark {
+  display: block;
+  color: currentColor;
+  fill: currentColor;
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.yao-mark.is-moving {
+  color: var(--vermillion);
+}
+
+.yao-moving-dot {
+  fill: currentColor;
+}
+
+.trigram-mark {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.trigram-mark-line {
+  color: inherit;
+}
