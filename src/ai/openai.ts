@@ -158,6 +158,7 @@ async function parseStreamingResponse(
  *
  * 也支持任何 OpenAI-compatible 的代理服务（如 Azure OpenAI、Ollama 等）。
  * 默认模型为 gpt-4o，可通过 config.model 覆盖。
+ * 默认不设置输出 token 上限；只有调用方显式提供 callConfig.maxTokens 时才发送 max_tokens。
  *
  * @param config    AI 提供商配置（含 API Key、模型、自定义端点等）
  * @param request   分析请求（含排盘数据、占问事项）
@@ -172,23 +173,23 @@ export async function analyzeWithOpenAI(
 ): Promise<AIAnalysisResult> {
   const endpoint = getEndpoint(config);
   const model = config.model ?? 'gpt-4o';
-  const maxTokens = callConfig?.maxTokens ?? 4096;
   const temperature = callConfig?.temperature ?? 0.7;
   const stream = callConfig?.stream ?? false;
 
   const systemPrompt = buildSystemPrompt();
   const userMessage = buildUserMessage(request);
 
-  const body = JSON.stringify({
+  const requestBody: Record<string, unknown> = {
     model,
-    max_tokens: maxTokens,
     temperature,
     stream,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userMessage },
     ],
-  });
+  };
+  if (callConfig?.maxTokens !== undefined) requestBody.max_tokens = callConfig.maxTokens;
+  const body = JSON.stringify(requestBody);
 
   let response: Response;
 

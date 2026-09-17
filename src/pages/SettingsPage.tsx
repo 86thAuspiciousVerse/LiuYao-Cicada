@@ -8,11 +8,14 @@ export default function SettingsPage() {
   const navigate = useNavigate()
   const initial = readAISettings()
   const [provider, setProvider] = useState<AIProviderType>(initial.provider)
+  const [providerName, setProviderName] = useState(initial.providerName)
   const [model, setModel] = useState(initial.model)
+  const [baseUrl, setBaseUrl] = useState(initial.baseUrl)
+  const [apiKey, setApiKey] = useState(initial.apiKey)
   const [saved, setSaved] = useState(false)
 
   const handleSave = () => {
-    saveAISettings({ provider, model })
+    saveAISettings({ provider, providerName, model, baseUrl, apiKey })
     setSaved(true)
     window.setTimeout(() => setSaved(false), 1800)
   }
@@ -42,11 +45,45 @@ export default function SettingsPage() {
             </label>
 
             <label className="settings-field">
+              <span>服务商名称</span>
+              <input
+                value={providerName}
+                onChange={e => setProviderName(e.target.value)}
+                placeholder={provider === 'openai' ? '例如：DeepSeek、硅基流动、Ollama' : '例如：Claude'}
+                autoComplete="organization"
+              />
+            </label>
+
+            <label className="settings-field">
               <span>模型</span>
               <input
                 placeholder={provider === 'openai' ? '服务端默认或 gpt-4o' : '服务端默认 Claude 模型'}
                 value={model}
                 onChange={e => setModel(e.target.value)}
+                autoComplete="off"
+              />
+            </label>
+
+            <label className="settings-field">
+              <span>Base URL</span>
+              <input
+                type="url"
+                value={baseUrl}
+                onChange={e => setBaseUrl(e.target.value)}
+                placeholder={provider === 'openai' ? '留空使用服务端默认；例如 https://api.example.com/v1' : '留空使用服务端默认'}
+                autoComplete="url"
+                spellCheck={false}
+              />
+            </label>
+
+            <label className="settings-field">
+              <span>API Key</span>
+              <input
+                type="password"
+                value={apiKey}
+                onChange={e => setApiKey(e.target.value)}
+                placeholder="留空使用服务端环境变量"
+                autoComplete="new-password"
               />
             </label>
           </div>
@@ -54,7 +91,7 @@ export default function SettingsPage() {
 
         <section className="settings-card settings-note">
           <h2 className="settings-card-title">解析模式</h2>
-          <p>远程 AI 通过服务端代理调用，API Key 和 Base URL 只从服务端环境变量读取，不会保存在浏览器中。</p>
+          <p>远程 AI 通过服务端代理调用。这里填写的配置会保存在当前浏览器本地，并随请求发送给服务端；留空时使用服务端环境变量。公共设备请不要保存 API Key。</p>
         </section>
 
         <button className="settings-save" onClick={handleSave}>

@@ -51,7 +51,7 @@ npm run preview  # 预览生产构建
 
 ## AI 配置
 
-AI Key 不保存在浏览器中，也不由前端直接请求官方 API。远程 AI 统一通过服务端 `/api/analyze` 代理调用。
+AI 不由前端直接请求官方 API，远程 AI 统一通过服务端 `/api/analyze` 代理调用。
 
 复制 `.env.example` 为 `.env`，然后在 `.env` 中填写真实密钥：
 
@@ -80,7 +80,7 @@ ANTHROPIC_BASE_URL=https://api.anthropic.com
 ANTHROPIC_MODEL=你的 Claude 模型名
 ```
 
-进入应用的“设置”页面可以选择提供商和模型。Base URL 与 API Key 只从服务端环境变量读取。
+进入应用的“设置”页面可以配置提供商类型、服务商名称、模型、Base URL 和 API Key。页面配置会保存在当前浏览器本地，并随请求发送给服务端；对应字段留空时使用服务端环境变量。公共设备请不要保存 API Key。
 
 `.env` 已被忽略，请不要把真实 API Key 放进源码、README 或提交记录。
 

@@ -22,7 +22,10 @@ export default function AnalysisPage() {
   )
   const settings = readAISettings()
   const [aiProvider, setAiProvider] = useState<AIProviderType>(settings.provider)
+  const [providerName, setProviderName] = useState(settings.providerName)
   const [model, setModel] = useState(settings.model)
+  const [baseUrl, setBaseUrl] = useState(settings.baseUrl)
+  const [apiKey, setApiKey] = useState(settings.apiKey)
   const [aiText, setAiText] = useState('')
   const [aiError, setAiError] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -37,17 +40,21 @@ export default function AnalysisPage() {
     )
   }
 
+  const providerLabel = providerName.trim() || (aiProvider === 'openai' ? 'OpenAI 兼容' : 'Claude')
+
   const handleAnalyze = async () => {
     setAiError('')
     setAiText('')
     setIsAnalyzing(true)
-    saveAISettings({ provider: aiProvider, model })
+    saveAISettings({ provider: aiProvider, providerName, model, baseUrl, apiKey })
 
     try {
       setAnalysisMode('remote')
       const result = await requestServerAnalysis({
         provider: aiProvider,
         model: model.trim() || undefined,
+        baseUrl: baseUrl.trim() || undefined,
+        apiKey: apiKey.trim() || undefined,
         serializedPan,
         question: pan.question,
         yongShen: pan.yongShen,
@@ -92,16 +99,38 @@ export default function AnalysisPage() {
             </select>
           </label>
           <label>
+            <span>服务商名称</span>
+            <input value={providerName} onChange={e => setProviderName(e.target.value)} placeholder="例如：DeepSeek" />
+          </label>
+          <label>
             <span>API Key</span>
-            <input value="由服务端环境变量读取" disabled />
+            <input
+              type="password"
+              value={apiKey}
+              onChange={e => setApiKey(e.target.value)}
+              placeholder="留空使用服务端环境变量"
+              autoComplete="new-password"
+            />
           </label>
           <label>
             <span>模型</span>
-            <input value={model} onChange={e => setModel(e.target.value)} placeholder={aiProvider === 'openai' ? '服务端默认或 gpt-4o' : '服务端默认 Claude 模型'} />
+            <input
+              value={model}
+              onChange={e => setModel(e.target.value)}
+              placeholder={aiProvider === 'openai' ? '服务端默认或 gpt-4o' : '服务端默认 Claude 模型'}
+              autoComplete="off"
+            />
           </label>
           <label>
             <span>Base URL</span>
-            <input value="由服务端环境变量读取" disabled />
+            <input
+              type="url"
+              value={baseUrl}
+              onChange={e => setBaseUrl(e.target.value)}
+              placeholder="留空使用服务端环境变量"
+              autoComplete="url"
+              spellCheck={false}
+            />
           </label>
         </div>
 
@@ -120,7 +149,7 @@ export default function AnalysisPage() {
       {aiText && (
         <article className="analysis-output">
           <div className="analysis-output-head">
-            {analysisMode === 'remote' ? 'AI 返回结果' : '本地规则摘要'}
+            {analysisMode === 'remote' ? `${providerLabel} 返回结果` : '本地规则摘要'}
           </div>
           <pre>{aiText}</pre>
         </article>
@@ -137,6 +166,8 @@ export default function AnalysisPage() {
 interface ServerAnalysisRequest {
   provider: AIProviderType
   model?: string
+  baseUrl?: string
+  apiKey?: string
   serializedPan: string
   question?: string
   yongShen?: string

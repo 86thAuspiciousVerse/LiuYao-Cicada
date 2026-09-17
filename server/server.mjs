@@ -73,22 +73,25 @@ async function handleAnalyze(req, res) {
 }
 
 async function callOpenAI(payload) {
-  const apiKey = process.env.OPENAI_API_KEY || process.env.AI_API_KEY
-  if (!apiKey) throw new HttpError(500, '服务端未配置 OPENAI_API_KEY')
+  const apiKey = payload.apiKey || process.env.OPENAI_API_KEY || process.env.AI_API_KEY
+  const baseUrl = normalizeBaseUrl(payload.baseUrl || process.env.OPENAI_BASE_URL || process.env.AI_BASE_URL || 'https://api.openai.com/v1')
+  if (!apiKey && isOfficialOpenAIUrl(baseUrl)) {
+    throw new HttpError(500, '服务端未配置 OPENAI_API_KEY')
+  }
 
-  const baseUrl = normalizeBaseUrl(process.env.OPENAI_BASE_URL || process.env.AI_BASE_URL || 'https://api.openai.com/v1')
   const model = payload.model || process.env.OPENAI_MODEL || process.env.AI_MODEL || 'gpt-4o'
   const endpoint = `${baseUrl}/chat/completions`
 
+  const headers = {
+    'content-type': 'application/json',
+  }
+  if (apiKey) headers.authorization = `Bearer ${apiKey}`
+
   const response = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      authorization: `Bearer ${apiKey}`,
-      'content-type': 'application/json',
-    },
+    headers,
     body: JSON.stringify({
       model,
-      max_tokens: getMaxTokens(),
       temperature: getTemperature(),
       messages: [
         { role: 'system', content: buildSystemPrompt() },
@@ -115,10 +118,10 @@ async function callOpenAI(payload) {
 }
 
 async function callClaude(payload) {
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY || process.env.AI_API_KEY
+  const apiKey = payload.apiKey || process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY || process.env.AI_API_KEY
   if (!apiKey) throw new HttpError(500, '服务端未配置 ANTHROPIC_API_KEY')
 
-  const baseUrl = normalizeBaseUrl(process.env.ANTHROPIC_BASE_URL || process.env.CLAUDE_BASE_URL || 'https://api.anthropic.com')
+  const baseUrl = normalizeBaseUrl(payload.baseUrl || process.env.ANTHROPIC_BASE_URL || process.env.CLAUDE_BASE_URL || 'https://api.anthropic.com')
   const model = payload.model || process.env.ANTHROPIC_MODEL || process.env.CLAUDE_MODEL || process.env.AI_MODEL
   if (!model) throw new HttpError(500, '服务端未配置 ANTHROPIC_MODEL，或前端未填写 Claude 模型')
 
@@ -191,7 +194,10 @@ function normalizeAnalyzePayload(body) {
 
   return {
     provider,
+    providerName: readOptionalText(body.providerName),
     model: typeof body.model === 'string' && body.model.trim() ? body.model.trim() : undefined,
+    baseUrl: readOptionalText(body.baseUrl),
+    apiKey: readOptionalText(body.apiKey),
     serializedPan,
     question: typeof body.question === 'string' ? body.question.trim() : '',
     yongShen: typeof body.yongShen === 'string' ? body.yongShen.trim() : '',
@@ -251,7 +257,31 @@ function sendJson(res, status, data) {
 }
 
 function normalizeBaseUrl(value) {
-  return value.replace(/\/+$/, '')
+  const normalized = value.trim().replace(/\/+$/, '')
+  let parsed
+  try {
+    parsed = new URL(normalized)
+  } catch {
+    throw new HttpError(400, 'Base URL 必须是有效的 http(s) 地址')
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new HttpError(400, 'Base URL 必须使用 http 或 https')
+  }
+  return normalized
+}
+
+function isOfficialOpenAIUrl(value) {
+  try {
+    return new URL(value).hostname === 'api.openai.com'
+  } catch {
+    return false
+  }
+}
+
+function readOptionalText(value) {
+  if (typeof value !== 'string') return undefined
+  const trimmed = value.trim()
+  return trimmed ? trimmed : undefined
 }
 
 function getMaxTokens() {
